@@ -40,8 +40,6 @@ const createTrabajo = asyncHandler(async (req, res) => {
         horarios,
     });
 
-    console.log("trabajo creado", trabajo);
-
 
     const createdTrabajo = await trabajo.save();
     res.status(201).json(createdTrabajo);
@@ -53,7 +51,6 @@ const createTrabajo = asyncHandler(async (req, res) => {
 const getTrabajoById = asyncHandler(async (req, res) => {
     const trabajo = await Trabajo.findById(req.params.id);
 
-    console.log(typeof trabajo.employer_id)
 
     if (!trabajo) {
         res.status(404);
