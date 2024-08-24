@@ -37,7 +37,7 @@ server = app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
 });
 
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'https://pruebasjobly.netlify.app'];
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'thejobly.com', 'www.thejobly.com'];
 
 app.use(cors({
     origin: (origin, callback) => {
