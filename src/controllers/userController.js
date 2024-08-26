@@ -8,24 +8,24 @@ const User = require('../models/user')
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { email, password, name, phone, sector,} = req.body;
+    const { name, email, password, phone, sector, ingles } = req.body;
 
-    if (!name || !email || !password) {
-        res.status(400)
-        throw new Error('Please add all fields')
+    if (!name || !email || !password || !phone || !sector) {
+        res.status(400);
+        throw new Error('Please add all fields');
     }
 
     // Check if user exists
-    const userExists = await User.findOne({ email })
+    const userExists = await User.findOne({ email });
 
     if (userExists) {
-        res.status(400)
-        throw new Error('User already exists')
+        res.status(400);
+        throw new Error('User already exists');
     }
 
     // Hash password
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create user
     const user = await User.create({
@@ -33,23 +33,23 @@ const registerUser = asyncHandler(async (req, res) => {
         email,
         password: hashedPassword,
         phone,
-        sector
-    })
+        sector,
+        ingles,
+    });
 
     if (user) {
         res.status(201).json({
             _id: user.id,
             name: user.name,
             email: user.email,
-            phone: user.phone,
-            sector: user.sector,
             token: generateToken(user._id),
-        })
+        });
     } else {
-        res.status(400)
-        throw new Error('Invalid user data')
+        res.status(400);
+        throw new Error('Invalid user data');
     }
-})
+});
+
 
 // @desc    Authenticate a user
 // @route   POST /api/users/login
