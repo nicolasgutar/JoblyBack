@@ -85,6 +85,30 @@ const getMe = asyncHandler(async (req, res) => {
     res.status(200).json(req.user)
 })
 
+// @desc    Update user data
+// @route   PATCH /api/users/me
+// @access  Private
+const updateUser = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id).select('-password');
+
+    if (!user) {
+        res.status(404);
+        throw new Error('User not found');
+    }
+
+    const { name, phone, sector, ingles, formacion, resume } = req.body;
+
+    if (name) user.name = name;
+    if (phone) user.phone = phone;
+    if (sector) user.sector = sector;
+    if (formacion) user.formacion = formacion;
+    if (ingles) user.ingles = ingles;
+    if (resume) user.resume = resume;
+
+    const updatedUser = await user.save();
+    res.status(200).json(updatedUser);
+});
+
 // Generate JWT
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -107,5 +131,6 @@ module.exports = {
     registerUser,
     loginUser,
     getMe,
-    getUserById, // Export the new method
+    getUserById,
+    updateUser,
 };

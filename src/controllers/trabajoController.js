@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Trabajo = require('../models/trabajo');
+const Empresa = require('../models/empresa');
 const mongoose = require("mongoose");
 
 // @desc    Get all jobs
@@ -28,6 +29,19 @@ const createTrabajo = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Please add all fields');
     }
+
+    const empresa = await Empresa.findById(employer_id);
+
+    if (!empresa) {
+        res.status(404);
+        throw new Error('Employer not found');
+    }
+
+    // Increment the tot_trabajos field
+    empresa.tot_trabajos += 1;
+
+    // Save the updated Empresa document
+    await empresa.save();
 
     const trabajo = new Trabajo({
         job_title,

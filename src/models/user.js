@@ -10,6 +10,8 @@ const UserSchema = new mongoose.Schema({
         createdAt:{type:Date, default:new Date()},
         role: { type: String, default: 'user' },
         ingles: { type: String },
+        formacion: { type: String },
+        resume: { type: String },
     },
     {
         timestamps: true,
