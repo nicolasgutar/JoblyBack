@@ -11,6 +11,7 @@ const TrabajoSchema = new mongoose.Schema({
     isActive: { type: Boolean, required: false, default: true },
     aplicantes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     horarios: { type: String, required: true, default:'sin horario' },
+    job_city: { type: String },
 });
 
 module.exports = mongoose.model("Trabajo", TrabajoSchema);

@@ -8,6 +8,7 @@ const { errorHandler } = require("./middlewares/errorMiddleware");
 const authRoute = require("./routes/authentication");
 const adminRoute = require("./routes/empresas");
 const trabajoRoute = require("./routes/trabajos");
+const aplicacionRoute = require("./routes/aplicaciones");
 const { MONGO_URL, PORT } = process.env;
 
 let server;
@@ -57,6 +58,7 @@ app.use(express.json());
 app.use("/auth", authRoute);
 app.use("/admin", adminRoute);
 app.use("/trabajos", trabajoRoute);
+app.use("/aplicaciones",aplicacionRoute);
 
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
