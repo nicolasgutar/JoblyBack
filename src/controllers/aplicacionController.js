@@ -55,8 +55,25 @@ const getTrabajosByUser = asyncHandler(async (req, res) => {
     res.status(200).json(trabajos);
 });
 
+// @desc    Get all applications for a specific job
+// @route   GET /api/aplicaciones/trabajo/:trabajo_id
+// @access  Private
+const getAplicacionesByTrabajo = asyncHandler(async (req, res) => {
+    const { trabajo_id } = req.params;
+
+    const aplicaciones = await Aplicacion.find({ trabajo_id }).populate('user_id');
+
+    if (!aplicaciones) {
+        res.status(404);
+        throw new Error('No applications found for this job');
+    }
+
+    res.status(200).json(aplicaciones);
+});
+
 module.exports = {
     createAplicacion,
     getAplicaciones,
     getTrabajosByUser,
+    getAplicacionesByTrabajo,
 };
