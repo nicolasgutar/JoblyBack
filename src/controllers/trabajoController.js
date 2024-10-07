@@ -96,10 +96,37 @@ const patchEstudiante = asyncHandler(async (req, res) => {
     res.status(200).json(trabajo);
 });
 
+// @desc    Update job data
+// @route   PATCH /api/trabajos/:id
+// @access  Private
+const updateTrabajo = asyncHandler(async (req, res) => {
+
+    const trabajo = await Trabajo.findById(req.params.id);
+
+    if (!trabajo) {
+        res.status(404);
+        throw new Error('Job not found');
+    }
+
+    const { job_title, job_naics_name, employer_name, salario, horarios, requerimientos, descripcion } = req.body;
+
+    if (job_title) trabajo.job_title = job_title;
+    if (job_naics_name) trabajo.job_naics_name = job_naics_name;
+    if (employer_name) trabajo.employer_name = employer_name;
+    if (salario) trabajo.salario = salario;
+    if (horarios) trabajo.horarios = horarios;
+    if (requerimientos) trabajo.requerimientos = requerimientos;
+    if (descripcion) trabajo.descripcion = descripcion;
+
+    const updatedTrabajo = await trabajo.save();
+    res.status(200).json(updatedTrabajo);
+});
+
 module.exports = {
     getAllTrabajos,
     getTrabajosForEmployer,
     createTrabajo,
     getTrabajoById,
-    patchEstudiante, // Export the new method
+    patchEstudiante,
+    updateTrabajo,
 };
