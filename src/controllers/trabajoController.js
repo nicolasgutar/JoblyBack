@@ -109,7 +109,7 @@ const updateTrabajo = asyncHandler(async (req, res) => {
         throw new Error('Job not found');
     }
 
-    const { job_title, job_naics_name, employer_name, salario, horarios, requerimientos, descripcion } = req.body;
+    const { job_title, job_naics_name, employer_name, salario, horarios, requerimientos, descripcion, isActive } = req.body;
 
     if (job_title) trabajo.job_title = job_title;
     if (job_naics_name) trabajo.job_naics_name = job_naics_name;
@@ -118,6 +118,7 @@ const updateTrabajo = asyncHandler(async (req, res) => {
     if (horarios) trabajo.horarios = horarios;
     if (requerimientos) trabajo.requerimientos = requerimientos;
     if (descripcion) trabajo.descripcion = descripcion;
+    if (isActive !== undefined) trabajo.isActive = isActive;
 
     const updatedTrabajo = await trabajo.save();
     res.status(200).json(updatedTrabajo);
