@@ -6,16 +6,15 @@ const { getAllTrabajos,
     createTrabajo,
     getTrabajoById,
     patchEstudiante,
-    updateTrabajo} = require('../controllers/trabajoController');
+    updateTrabajo,
+    getActiveTrabajosWithApplicants } = require('../controllers/trabajoController');
 
 router.get('/', getAllTrabajos);
 router.get('/employer/:emp_id', getTrabajosForEmployer);
+router.get('/reclutar', getActiveTrabajosWithApplicants);
 router.get('/:id', getTrabajoById);
 router.post('/', createTrabajo);
 router.patch('/:id', patchEstudiante);
-
 router.patch('/update/:id', updateTrabajo);
-
-
 
 module.exports = router;

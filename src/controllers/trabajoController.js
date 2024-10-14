@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const Trabajo = require('../models/trabajo');
 const Empresa = require('../models/empresa');
 const mongoose = require("mongoose");
+const { Parser } = require('json2csv');
 
 // @desc    Get all jobs
 // @route   GET /api/trabajos
@@ -122,6 +123,75 @@ const updateTrabajo = asyncHandler(async (req, res) => {
     res.status(200).json(updatedTrabajo);
 });
 
+// src/controllers/trabajoController.js
+
+const getActiveTrabajosWithApplicants = asyncHandler(async (req, res) => {
+    let trabajos = await Trabajo.aggregate([
+        {
+            $match: {
+                isActive: true
+            }
+        },
+        {
+            $unwind: "$aplicantes"
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "aplicantes",
+                foreignField: "_id",
+                as: "applicant_info"
+            }
+        },
+        {
+            $unwind: "$applicant_info"
+        },
+        {
+            $project: {
+                job_title: 1,
+                "applicant_info.name": 1,
+                "applicant_info.email": 1,
+                "applicant_info.phone": 1,
+                "applicant_info.sector": 1,
+                "applicant_info.ingles": 1,
+                "applicant_info.formacion": 1,
+                "applicant_info.resume": 1
+            }
+        }
+    ]);
+
+    // Remove newlines from applicant_info fields
+    trabajos = trabajos.map(trabajo => {
+        if (trabajo.applicant_info && trabajo.applicant_info.formacion) {
+            trabajo.applicant_info.formacion = trabajo.applicant_info.formacion.replace(/(\r\n|\n|\r)/g, ' ');
+        }
+        return trabajo;
+    });
+
+    if (req.query.format === 'csv') {
+        const fields = [
+            'job_title',
+            'applicant_info.name',
+            'applicant_info.email',
+            'applicant_info.phone',
+            'applicant_info.sector',
+            'applicant_info.ingles',
+            'applicant_info.formacion',
+            'applicant_info.resume'
+        ];
+
+        const json2csvParser = new Parser({ fields});
+        const csv = json2csvParser.parse(trabajos);
+
+        res.header('Content-Type', 'text/csv');
+        res.attachment('trabajos_applicants.csv');
+        return res.send(csv);
+    }
+
+    res.status(200).json(trabajos);
+});
+
+
 module.exports = {
     getAllTrabajos,
     getTrabajosForEmployer,
@@ -129,4 +199,5 @@ module.exports = {
     getTrabajoById,
     patchEstudiante,
     updateTrabajo,
+    getActiveTrabajosWithApplicants,
 };
