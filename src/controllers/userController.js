@@ -127,10 +127,16 @@ const getUserById = asyncHandler(async (req, res) => {
     res.status(200).json(user);
 });
 
+const getUserCount = asyncHandler(async (req, res) => {
+    const count = await User.countDocuments();
+    res.status(200).json({ count });
+});
+
 module.exports = {
     registerUser,
     loginUser,
     getMe,
     getUserById,
     updateUser,
+    getUserCount,
 };
