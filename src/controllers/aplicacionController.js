@@ -71,9 +71,30 @@ const getAplicacionesByTrabajo = asyncHandler(async (req, res) => {
     res.status(200).json(aplicaciones);
 });
 
+// @desc    Toggle visibility of an application
+// @route   PATCH /api/aplicaciones/:id/toggle-visibility
+// @access  Private
+const toggleVisibility = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const aplicacion = await Aplicacion.findById(id);
+
+    if (!aplicacion) {
+        res.status(404);
+        throw new Error('Application not found');
+    }
+
+    aplicacion.visibility = !aplicacion.visibility;
+    await aplicacion.save();
+
+    res.status(200).json(aplicacion);
+});
+
+
 module.exports = {
     createAplicacion,
     getAplicaciones,
     getTrabajosByUser,
     getAplicacionesByTrabajo,
+    toggleVisibility,
 };
